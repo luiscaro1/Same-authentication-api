@@ -3,6 +3,7 @@ from flask_cors import CORS,cross_origin
 from controller.accounts import BaseAccounts
 
 app = Flask(__name__)
+
 CORS(app)
 @app.route('/')
 def index():
