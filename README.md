@@ -9,6 +9,7 @@
 <br/>
 
 Run the following command to install pipenv:
+
 <br/>
 
 ```
@@ -27,8 +28,11 @@ pipenv shell
 ```
 
 <br/>
+
 Finally, install the project's dependencies with the following:
+
 <br/>
+
 <br/>
 
 ```
@@ -39,7 +43,29 @@ pipenv install
 
 <br/>
 
-To add a new dependency to the project use the following command in the project's root directory:
+To add a new dependency to the project use the following command in the project's root directory. Make sure you have pip env installed locally and have a python 3+ version running on your computer:
+
+<br/>
+
+If you do not have pipenv installed locally, then do so by running the following commmand:
+
+<br/>
+
+```
+pip install pipenv
+```
+
+Make sure you are in the development environment by running:
+
+<br/>
+
+```
+pipenv shell
+```
+
+<br/>
+
+Finally, install project dependencies by running:
 
 <br/>
 
@@ -52,8 +78,9 @@ pipenv install <package name>
 ## Running Development
 
 <br/>
+
 To run the project write the following command in the project's root directory:
-<br/>
+
 <br/>
 
 ### Inside of the container:

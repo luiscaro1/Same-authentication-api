@@ -3,7 +3,7 @@ version: "3"
 services:
   auth-api:
     build:
-      dockerfile: dockerFile.dev
+      dockerfile: dockerfile.dev
       context: .
     restart: always
     environment:
