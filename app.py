@@ -4,6 +4,7 @@ from controller.accounts import BaseAccounts
 import jwt #needs to install the dependency, for some reason no me deja en mi laptop
 import datetime
 from functools import wraps
+
 # verify if the example works
 
 app = Flask(__name__)
