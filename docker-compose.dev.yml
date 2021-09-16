@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  auth-api:
+    build:
+      dockerfile: dockerFile.dev
+      context: .
+    restart: always
+    environment:
+      FLASK_ENV: development
+    volumes:
+      - ".:/app"
+    ports:
+      - "5000:5000"

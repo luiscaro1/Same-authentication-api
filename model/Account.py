@@ -8,14 +8,48 @@ class AccountDAO:
                                                                    pg_config['password'],
                                                                    pg_config['host'])
         self.conn=psycopg2.connect(connection_url)
-
+#getting all the users from the db
     def getAllUsers(self):
         cursor=self.conn.cursor()
-        query="select id, email from test;"
+        query="select * from user_account;"
         cursor.execute(query)
         result=[]
         for row in cursor:
             result.append(row)
         return result
+#get a specific user by id
+    def getUser(self,uaid):
+        cursor=self.conn.cursor()
+        query='select * from user_account where uaid=%s;'
+        cursor.execute(query,(uaid,))
+        result=cursor.fetchone()
+        return result
+#Creating a new user
+    def addUser(self,uaemail, uausername, uapassword, firstname, lastname, dob, isActive, isCoach,uaplatform):
+        cursor=self.conn.cursor()
+        query='insert into user_account(uaemail,uausername,uapassword,firstname,lastname,dob,isActive,isCoach,uaplatform) values (%s,%s,%s,%s,%s,%s,%s,%s,%s) returning uaid'
+        cursor.execute(query,(uaemail, uausername, uapassword, firstname, lastname, dob, isActive, isCoach,uaplatform,))
+        uaid=cursor.fetchone()
+        self.conn.commit()
+        return uaid
+#updating a user
+    def updateUser(self,uausername,uapassword,uaplatform, uaid):
+        cursor=self.conn.cursor()
+        query="update user_account set uausername=%s, uapassword=%s,"\
+        "uaplatform=%s where uaid=%s returning *"
+        cursor.execute(query,(uausername,uapassword,uaplatform, uaid))
+        uausername=cursor.fetchone()
+        self.conn.commit()
+        return uausername
+#deleting a user, by deleting a user the isActive will turn to false
+    def deleteUser(self,uaid):
+        cursor=self.conn.cursor()
+        query='update user_account set isActive=false where uaid=%s returning *'
+        cursor.execute(query,(uaid,))
+        result=cursor.fetchone()
+        self.conn.commit()
+        return result
+        
 
-# just added this to push my branch abd pull the other things
+
+    
