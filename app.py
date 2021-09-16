@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify, make_response
 from flask_cors import CORS,cross_origin
 from controller.accounts import BaseAccounts
-import jwt #needs to install the dependency, for some reason no me deja en mi laptop
+import jwt 
 import datetime
 from functools import wraps
 
@@ -38,7 +38,7 @@ def users():
         return BaseAccounts().getAllUsers()
     else:
         return BaseAccounts().addUser(request.json)
-
+# need to work on this, for some reasson the put is not working
 @app.route('/Same/accounts/<int:uaid>',methods=['GET', 'PUT', 'DELETE'])
 def getSpecificUser(uaid):
     if request.method == "GET":
