@@ -1,4 +1,4 @@
-from flask import jsonify
+from flask import jsonify, request
 from model.Account import AccountDAO
 
 class BaseAccounts:
@@ -90,3 +90,13 @@ class BaseAccounts:
         else:
             result = self.builtmapdict(user_tuple)
             return jsonify(result), 200
+
+    def Log_in(self, username, password):
+        dao = AccountDAO
+        login_tuple = dao.validateUser(username, password,)
+        if login_tuple:
+            return True
+        else:
+            return False
+
+            

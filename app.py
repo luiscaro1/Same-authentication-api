@@ -4,6 +4,8 @@ from controller.accounts import BaseAccounts
 import jwt 
 import datetime
 from functools import wraps
+from config.db_config import pg_config
+import psycopg2
 
 # verify if the example works
 
@@ -62,12 +64,13 @@ def protected():
 
 @app.route('/login')
 def login():
-    auth=request.authorization
-    if auth and auth.username=='username' and auth.password=='password':
-        token=jwt.encode({'user': auth.username,'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, app.config['SECRET_KEY'])
+    username = request.form.get("usesrname")
+    password = request.form.get("password")
+    if BaseAccounts().Log_in(username, password):
+        token=jwt.encode({'user': username,'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30 )}, app.config['SECRET_KEY'])
         return jsonify({'token':token.decode('UTF-8')})
-
-    return make_response('Could not verify user!',401, {'WWW-Authenticate': 'Basic realm="Login Required"'})
+    else:
+        return jsonify('Username or Password is incorrect, please try again'), 405
 
 
 if __name__=="main":

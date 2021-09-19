@@ -49,6 +49,15 @@ class AccountDAO:
         result=cursor.fetchone()
         self.conn.commit()
         return result
+
+    def validateUser(self, uausername, uapassword):
+        cursor=self.conn.cursor()
+        query="""select uausername, uapassword
+        from user_account
+        where uausername=%s and uapassword=%s """
+        cursor.execute(query,(uausername, uapassword))
+        result=cursor.fetchone()
+        return result
         
 
 
