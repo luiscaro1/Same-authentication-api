@@ -64,13 +64,12 @@ def protected():
 
 @app.route('/login')
 def login():
-    username = request.form.get("usesrname")
-    password = request.form.get("password")
-    if BaseAccounts().Log_in(username, password):
-        token=jwt.encode({'user': username,'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30 )}, app.config['SECRET_KEY'])
-        return jsonify({'token':token.decode('UTF-8')})
-    else:
-        return jsonify('Username or Password is incorrect, please try again'), 405
+    res = BaseAccounts().Log_in(request.json)
+    if res:
+        token = jwt.encode({'user': res,'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, app.config['SECRET_KEY'])
+        return token
+
+    return jsonify('Userame and password not valid, please try again'), 405
 
 
 if __name__=="main":

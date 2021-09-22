@@ -52,13 +52,12 @@ class AccountDAO:
 
     def validateUser(self, uausername, uapassword):
         cursor=self.conn.cursor()
-        query="""select uausername, uapassword
+        query="""select uausername
         from user_account
         where uausername=%s and uapassword=%s """
         cursor.execute(query,(uausername, uapassword))
         result=cursor.fetchone()
         return result
-        
 
 
     
