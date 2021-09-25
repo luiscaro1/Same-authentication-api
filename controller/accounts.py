@@ -1,6 +1,5 @@
 from flask import jsonify, request
 from model.Account import AccountDAO
-import jwt
 
 class BaseAccounts:
     #getting all the user accounts
@@ -40,6 +39,12 @@ class BaseAccounts:
         result['isActive']=isActive
         result['isCoach']=isCoach
         result['uaplatform']=uaplatform
+        return result
+    
+    def built_attr_dic2(self,token,uaid):
+        result={}
+        result['token']=token
+        result['uaid']=uaid
         return result
 
     def getUser(self, id):
@@ -101,8 +106,28 @@ class BaseAccounts:
             return user_tuple
         else:
             return False
-    
 
-         
+    def add_token(self,json,uaid):
+        dao=AccountDAO()
+        token = json['token']
+        result=dao.blacklist(token,uaid)
+        self.built_attr_dic2(token,uaid)
+        return result
 
-            
+    def get_token(self,json):
+        dao=AccountDAO()
+        token=json['token']
+        isBlacklisted=dao.check_blacklist(token)
+        if isBlacklisted:
+            return jsonify('The token is blacklisted, and it cannot be used'),405
+        else:
+            return "Token is not Blacklisted"
+
+
+
+       
+
+
+
+
+        
