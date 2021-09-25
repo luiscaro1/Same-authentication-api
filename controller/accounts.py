@@ -1,5 +1,6 @@
 from flask import jsonify, request
 from model.Account import AccountDAO
+import jwt
 
 class BaseAccounts:
     #getting all the user accounts
@@ -100,5 +101,8 @@ class BaseAccounts:
             return user_tuple
         else:
             return False
+    
+
+         
 
             
