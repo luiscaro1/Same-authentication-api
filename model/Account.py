@@ -49,7 +49,35 @@ class AccountDAO:
         result=cursor.fetchone()
         self.conn.commit()
         return result
-        
+
+    def validateUser(self, uausername, uapassword):
+        cursor=self.conn.cursor()
+        query="""select uausername
+        from user_account
+        where uausername=%s and uapassword=%s """
+        cursor.execute(query,(uausername, uapassword))
+        result=cursor.fetchone()
+        return result
+#check if a token has been blacklisted
+    def check_blacklist(self,token):
+        query="select count(*) from blacklist where token=%s"
+        # print(query)
+        cursor=self.conn.cursor()
+        cursor.execute(query,(token,))
+        result=cursor.fetchone()
+        if result:
+           return True
+        else:
+            return False
+
+#used token is blacklisted
+    def blacklist(self,token,uaid):
+        cursor=self.conn.cursor()
+        query="insert into blacklist(token,uaid) values (%s,%s)"
+        cursor.execute(query,(token,uaid,))
+        self.conn.commit()
+        return "Token has been blacklisted"
+       
 
 
     

@@ -1,4 +1,4 @@
-from flask import jsonify
+from flask import jsonify, request
 from model.Account import AccountDAO
 
 class BaseAccounts:
@@ -39,6 +39,12 @@ class BaseAccounts:
         result['isActive']=isActive
         result['isCoach']=isCoach
         result['uaplatform']=uaplatform
+        return result
+    
+    def built_attr_dic2(self,token,uaid):
+        result={}
+        result['token']=token
+        result['uaid']=uaid
         return result
 
     def getUser(self, id):
@@ -90,3 +96,38 @@ class BaseAccounts:
         else:
             result = self.builtmapdict(user_tuple)
             return jsonify(result), 200
+
+    def Log_in(self,json):
+        dao = AccountDAO()
+        uausername = json['uausername']
+        uapassword = json['uapassword']
+        user_tuple = dao.validateUser(uausername, uapassword)
+        if user_tuple:
+            return user_tuple
+        else:
+            return False
+
+    def add_token(self,json,uaid):
+        dao=AccountDAO()
+        token = json['token']
+        result=dao.blacklist(token,uaid)
+        self.built_attr_dic2(token,uaid)
+        return result
+
+    def get_token(self,json):
+        dao=AccountDAO()
+        token=json['token']
+        isBlacklisted=dao.check_blacklist(token)
+        if isBlacklisted:
+            return jsonify('The token is blacklisted, and it cannot be used'),405
+        else:
+            return "Token is not Blacklisted"
+
+
+
+       
+
+
+
+
+        
