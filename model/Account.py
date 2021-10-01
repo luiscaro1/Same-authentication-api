@@ -49,15 +49,16 @@ class AccountDAO:
         result=cursor.fetchone()
         self.conn.commit()
         return result
-
+ #check that the credential for the username and password belong to a user already in the database
     def validateUser(self, uausername, uapassword):
         cursor=self.conn.cursor()
-        query="""select uausername
+        query="""select uaid, uausername
         from user_account
         where uausername=%s and uapassword=%s """
         cursor.execute(query,(uausername, uapassword))
         result=cursor.fetchone()
         return result
+        
 #check if a token has been blacklisted
     def check_blacklist(self,token):
         query="select count(*) from blacklist where token=%s"

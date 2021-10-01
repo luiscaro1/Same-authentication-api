@@ -64,20 +64,22 @@ def unprotected():
 def protected():
     return jsonify({'message': 'This is only for people with valid tokens.'})
 
-@app.route('/login', methods=["GET"])
+@app.route('/Same/login', methods=["GET"])
 def login():
     if request.method=="GET":
         res = BaseAccounts().Log_in(request.json)
+        uaid = res[0]
+        username = res[1]
         if res:
-            token = jwt.encode({'user': res,'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, app.config['SECRET_KEY'])
-            return token
+            token = jwt.encode({'user': username,'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, app.config['SECRET_KEY'])
+            cookie = make_response('generating cookie')
+            cookie.set_cookie('access_token',token)
+            return uaid
 
     return jsonify('Username and password not valid, please try again'), 405
 
-@app.route('/verify',methods=["GET"])
+@app.route('/Same/verify',methods=["GET"])
 def verify():
-    # authorization_header=request.headers.get('authorization')
-    # token=authorization_header.replace("Bearer","")
     verification=BaseAccounts().get_token(request.json)
     return verification
      #checking the token   
@@ -89,6 +91,11 @@ def logout(uaid):
     if request.method=="POST":
         res=BaseAccounts().add_token(request.json,uaid)
     return res
+
+
+@app.route('/Same/accounts/getCookie',methods=["GET"])
+def getCookie():
+    return BaseAccounts().getCookie()
     
 
 if __name__=="main":

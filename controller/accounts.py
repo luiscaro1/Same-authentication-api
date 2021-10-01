@@ -2,7 +2,7 @@ from flask import jsonify, request
 from model.Account import AccountDAO
 
 class BaseAccounts:
-    #getting all the user accounts
+    #getting all the user accounts from the data base
     def getAllUsers(self):
         dao=AccountDAO()
         accountlist=dao.getAllUsers()
@@ -47,6 +47,7 @@ class BaseAccounts:
         result['uaid']=uaid
         return result
 
+    # return a user from the database that matches the given ID
     def getUser(self, id):
         dao = AccountDAO()
         user_tuple = dao.getUser(id)
@@ -56,8 +57,8 @@ class BaseAccounts:
             result = self.builtmapdict(user_tuple)
             return jsonify(result), 200
 
-    
 
+    # create a new user account and then it is added to the databasae
     def addUser(self, json):
         uaemail = json['uaemail']
         uausername = json['uausername']
@@ -75,7 +76,7 @@ class BaseAccounts:
         result = self.built_attr_dic(id,uaemail,uausername, uapassword, firstname, lastname, dob, isActive,isCoach,uaplatform)
 
         return jsonify(result), 201
-
+    # Update the information of an existing user, in this case the user can update the username, password, and the platform
     def UpdateUser(self, json, id):
         dao = AccountDAO()
         uausername = json['uausername']
@@ -87,7 +88,7 @@ class BaseAccounts:
         else:
             result = self.builtmapdict(user_tuple)
             return jsonify(result), 200
-        
+    # delete an account from the database 
     def deleteUser(self, id):
         dao = AccountDAO()
         user_tuple = dao.deleteUser(id)
@@ -96,24 +97,26 @@ class BaseAccounts:
         else:
             result = self.builtmapdict(user_tuple)
             return jsonify(result), 200
-
+    # process which the user has to go through in order to gain access to their 
+    # account and be able to utilize the features of the webapplication
     def Log_in(self,json):
         dao = AccountDAO()
         uausername = json['uausername']
         uapassword = json['uapassword']
         user_tuple = dao.validateUser(uausername, uapassword)
+
         if user_tuple:
-            return user_tuple
+            return str(user_tuple[0]), user_tuple[1]
         else:
             return False
-
+    # adds a expired token to the database
     def add_token(self,json,uaid):
         dao=AccountDAO()
         token = json['token']
         result=dao.blacklist(token,uaid)
         self.built_attr_dic2(token,uaid)
         return result
-
+    # verifies if the token exist in the database so no duplicate of faulty token can be reused
     def get_token(self,json):
         dao=AccountDAO()
         token=json['token']
@@ -122,6 +125,10 @@ class BaseAccounts:
             return jsonify('The token is blacklisted, and it cannot be used'),405
         else:
             return "Token is not Blacklisted"
+
+    def getCookie(self):
+        cookie = request.cookies.get('access_token')
+        return cookie
 
 
 
