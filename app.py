@@ -64,9 +64,9 @@ def unprotected():
 def protected():
     return jsonify({'message': 'This is only for people with valid tokens.'})
 
-@app.route('/Same/login', methods=["GET"])
+@app.route('/Same/login', methods=["POST"])
 def login():
-    if request.method=="GET":
+    if request.method=="POST":
         res = BaseAccounts().Log_in(request.json)
         uaid = res[0]
         username = res[1]
