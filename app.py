@@ -64,6 +64,7 @@ def unprotected():
 def protected():
     return jsonify({'message': 'This is only for people with valid tokens.'})
 
+cross_origin()
 @app.route('/Same/login', methods=["POST"])
 def login():
     if request.method=="POST":
