@@ -71,11 +71,23 @@ class BaseAccounts:
         uaplatform=json['uaplatform']
 
         dao = AccountDAO()
-        id = dao.addUser(uaemail, uausername, uapassword, firstname, lastname, dob, isActive, isCoach,uaplatform)
+        ve = dao.emailExist(uaemail)#verifies if the email is already in use
+        if ve:
+            return "this email is already taken"
+        else:
+            ue = dao.usernameExist(uausername) #verifies if the username is alreadt taken
+            if ue:
+                return "username is already taken, please try a different one"
+            else:
+                vp = dao.validPassword(uapassword) #verifies if the password is valid
+                if vp == False: # this is that the password is valid
+                   id = dao.addUser(uaemail, uausername, uapassword, firstname, lastname, dob, isActive, isCoach,uaplatform)
+                   result = self.built_attr_dic(id,uaemail,uausername, uapassword, firstname, lastname, dob, isActive,isCoach,uaplatform)
+                   return jsonify(result), 201
+                else: # this is when the password does not meet a requirement
+                    return vp
+                    
 
-        result = self.built_attr_dic(id,uaemail,uausername, uapassword, firstname, lastname, dob, isActive,isCoach,uaplatform)
-
-        return jsonify(result), 201
     # Update the information of an existing user, in this case the user can update the username, password, and the platform
     def UpdateUser(self, json, id):
         dao = AccountDAO()
