@@ -48,9 +48,10 @@ cross_origin()
 def login():
     if request.method=="POST":
         res = BaseAccounts().Log_in(request.json)
-        uaid = res[0]
-        username = res[1]
+        
         if res:
+            uaid = res[0]
+            username = res[1]
             expire = datetime.datetime.utcnow() + datetime.timedelta(minutes=30)
             token = jwt.encode({'user': username,'exp': expire}, app.config['SECRET_KEY'])
             cookie = make_response(uaid)
