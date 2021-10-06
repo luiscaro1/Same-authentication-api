@@ -9,6 +9,7 @@ from config.db_config import pg_config
 import psycopg2
 import hashlib
 import json
+import uuid
 
 # verify if the example works
 
@@ -41,8 +42,7 @@ def getSpecificUser(uaid):
     else:
         return jsonify('Method not allowed'), 405
 
-# Authentication routes 
-
+# account login route
 cross_origin()
 @app.route('/Same/login', methods=["POST"])
 def login():
@@ -52,18 +52,39 @@ def login():
         username = res[1]
         if res:
             token = jwt.encode({'user': username,'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, app.config['SECRET_KEY'])
-            cookie = make_response('generating cookie')
-            cookie.set_cookie('access_token',token)
-            # current=request.cookies.get('access_token')
-            return uaid
-    return jsonify('Username and password not valid, please try again'), 405
- 
-@app.route('/Same/accounts/<uaid>/logout',methods=["POST"])
+            cookie = make_response(uaid)
+            cookie.set_cookie('access_token',token,expires=datetime.datetime.utcnow()+ datetime.timedelta(minutes=30))
+            cookie.set_cookie('uaid',uaid,expires=datetime.datetime.utcnow()+ datetime.timedelta(minutes=30))
+
+            return cookie
+
+    return jsonify('Username and password not valid, please try again'), 405   
+
+#will be changed   
+
+@app.route('/Same/accounts/logout/<uaid>',methods=["POST"])
 def logout(uaid):
-    return "",uaid
+    if uaid==request.cookies.get('uaid'): 
+        token=request.cookies.get('access_token')
+        decode_token=jwt.decode(token,app.config['SECRET_KEY'],algorithms=["HS256"])
+        if  not decode_token.get("exp") == 0:
+            decode_token.update({"exp":datetime.datetime.utcnow()})
+            logout_time=str(decode_token.get("exp"))
+            cookie_exp=make_response(uaid)
 
+            #still didnt do it lol
+            cookie_exp.set_cookie('access_token','',expires=0)
+            cookie_exp.set_cookie('uaid','',expires=0)
+            
+            #deleting it seems to not be working cause requires something i still havent figured out
+            # cookie_exp.delete_cookie('access_token')
+            # cookie_exp.delete_cookie('uaid')
+        
+        return logout_time
+    
+    return " "
 
-@app.route('/Same/accounts/getCookie',methods=["GET"])
+@app.route('/Same/accounts/getCookieOwner',methods=["GET"])
 def getCookie():
     return BaseAccounts().getCookie()
     

@@ -24,6 +24,7 @@ class AccountDAO:
         cursor.execute(query,(uaid,))
         result=cursor.fetchone()
         return result
+    
 #Creating a new user
     def addUser(self,uaemail, uausername, uapassword, firstname, lastname, dob, isActive, isCoach,uaplatform):
         cursor=self.conn.cursor()
@@ -120,8 +121,5 @@ class AccountDAO:
                 return "Password does not contain a special character. password must contain atleast 8 characters, atleast one uppercase letter, atleast one lowercase letter, atleast one number, and atleast one special character"
             else:
                 return False
-
-       
-
 
     

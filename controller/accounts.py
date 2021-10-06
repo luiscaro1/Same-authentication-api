@@ -123,14 +123,7 @@ class BaseAccounts:
             return False
 
     def getCookie(self):
-        cookie = request.cookies.get('access_token')
+        cookie = request.cookies.get('uaid')
         return cookie
 
 
-
-       
-
-
-
-
-        
