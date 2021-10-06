@@ -51,10 +51,11 @@ def login():
         uaid = res[0]
         username = res[1]
         if res:
-            token = jwt.encode({'user': username,'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, app.config['SECRET_KEY'])
+            expire = datetime.datetime.utcnow() + datetime.timedelta(minutes=30)
+            token = jwt.encode({'user': username,'exp': expire}, app.config['SECRET_KEY'])
             cookie = make_response(uaid)
-            cookie.set_cookie('access_token',token,expires=datetime.datetime.utcnow()+ datetime.timedelta(minutes=30))
-            cookie.set_cookie('uaid',uaid,expires=datetime.datetime.utcnow()+ datetime.timedelta(minutes=30))
+            cookie.set_cookie('access_token',token,expires=expire)
+            #cookie.set_cookie('uaid',uaid,expires=expire)
 
             return cookie
 
@@ -64,29 +65,25 @@ def login():
 
 @app.route('/Same/accounts/logout/<uaid>',methods=["POST"])
 def logout(uaid):
-    if uaid==request.cookies.get('uaid'): 
-        token=request.cookies.get('access_token')
-        decode_token=jwt.decode(token,app.config['SECRET_KEY'],algorithms=["HS256"])
-        if  not decode_token.get("exp") == 0:
-            decode_token.update({"exp":datetime.datetime.utcnow()})
-            logout_time=str(decode_token.get("exp"))
-            cookie_exp=make_response(uaid)
+    token=request.cookies.get('access_token')
+    decode_token=jwt.decode(token,app.config['SECRET_KEY'],algorithms=["HS256"])
+    if uaid==BaseAccounts().getCookieOwner(decode_token.get('user')): 
+        actual_time = datetime.datetime.utcnow()
+        if  not decode_token.get("exp") == actual_time:
+            decode_token.update({"exp":actual_time})
+            cookie= make_response("cookie has expired")
+            cookie.set_cookie('access_token','',expires=actual_time)
 
-            #still didnt do it lol
-            cookie_exp.set_cookie('access_token','',expires=0)
-            cookie_exp.set_cookie('uaid','',expires=0)
-            
-            #deleting it seems to not be working cause requires something i still havent figured out
-            # cookie_exp.delete_cookie('access_token')
-            # cookie_exp.delete_cookie('uaid')
+            return cookie
         
-        return logout_time
-    
     return " "
 
 @app.route('/Same/accounts/getCookieOwner',methods=["GET"])
 def getCookie():
-    return BaseAccounts().getCookie()
+    cookie = request.cookies.get('access_token')
+    decode_token = jwt.decode(cookie,app.config['SECRET_KEY'],algorithms=["HS256"])
+    user = decode_token.get('user')
+    return BaseAccounts().getCookieOwner(user)
     
 
 if __name__=="main":

@@ -33,6 +33,7 @@ class AccountDAO:
         uaid=cursor.fetchone()
         self.conn.commit()
         return uaid
+
 #updating a user
     def updateUser(self,uausername,uapassword,uaplatform, uaid):
         cursor=self.conn.cursor()
@@ -42,6 +43,7 @@ class AccountDAO:
         uausername=cursor.fetchone()
         self.conn.commit()
         return uausername
+
 #deleting a user, by deleting a user the isActive will turn to false
     def deleteUser(self,uaid):
         cursor=self.conn.cursor()
@@ -50,6 +52,7 @@ class AccountDAO:
         result=cursor.fetchone()
         self.conn.commit()
         return result
+
  #check that the credential for the username and password belong to a user already in the database
     def validateUser(self, uausername, uapassword):
         cursor=self.conn.cursor()
@@ -85,6 +88,15 @@ class AccountDAO:
             return True
         else:
             return False
+    # query to get the uaid from the uausername, used for the token and cookie portion of the authentication portion of the webapp
+    def getUaid(self, uausername):
+        cursor = self.conn.cursor()
+        query = """ select uaid
+        from user_account
+        where uausername = %s"""
+        cursor.execute(query,(uausername,))
+        result = cursor.fetchone()
+        return result
 
     #verifies if the password is valid
     def validPassword(self, uapassword):

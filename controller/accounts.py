@@ -100,6 +100,7 @@ class BaseAccounts:
         else:
             result = self.builtmapdict(user_tuple)
             return jsonify(result), 200
+
     # delete an account from the database 
     def deleteUser(self, id):
         dao = AccountDAO()
@@ -109,6 +110,7 @@ class BaseAccounts:
         else:
             result = self.builtmapdict(user_tuple)
             return jsonify(result), 200
+
     # process which the user has to go through in order to gain access to their 
     # account and be able to utilize the features of the webapplication
     def Log_in(self,json):
@@ -121,9 +123,11 @@ class BaseAccounts:
             return str(user_tuple[0]), user_tuple[1]
         else:
             return False
-
-    def getCookie(self):
-        cookie = request.cookies.get('uaid')
-        return cookie
+            
+    #process to search to whom the cookie belongs to
+    def getCookieOwner(self, uausername):
+        dao = AccountDAO()
+        user_tuple = dao.getUaid(uausername)
+        return user_tuple[0]
 
 
