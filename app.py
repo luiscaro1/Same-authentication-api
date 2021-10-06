@@ -54,16 +54,7 @@ def getSpecificUser(uaid):
     else:
         return jsonify('Method not allowed'), 405
 
-# Authentication routes basic examples
-@app.route('/unprotected')
-def unprotected():
-    return jsonify({'message':'Anyone can view this!'})
-
-@app.route('/protected')
-@token_required
-def protected():
-    return jsonify({'message': 'This is only for people with valid tokens.'})
-
+# account login route
 cross_origin()
 @app.route('/Same/login', methods=["POST"])
 def login():
@@ -73,20 +64,15 @@ def login():
         username = res[1]
         if res:
             token = jwt.encode({'user': username,'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, app.config['SECRET_KEY'])
-            cookie = make_response('generating cookie')
+            cookie = make_response(uaid)
             cookie.set_cookie('access_token',token)
-            return uaid
+            cookie.set_cookie('uaid',uaid)
 
-    return jsonify('Username and password not valid, please try again'), 405
+            return cookie
 
-@app.route('/Same/verify',methods=["GET"])
-def verify():
-    verification=BaseAccounts().get_token(request.json)
-    return verification
-     #checking the token   
+    return jsonify('Username and password not valid, please try again'), 405   
 
-
-#adds token to blacklist table    
+#will be changed   
 @app.route('/Same/accounts/<int:uaid>/logout',methods=["POST"])
 def logout(uaid):
     if request.method=="POST":
@@ -94,7 +80,7 @@ def logout(uaid):
     return res
 
 
-@app.route('/Same/accounts/getCookie',methods=["GET"])
+@app.route('/Same/accounts/getCookieOwner',methods=["GET"])
 def getCookie():
     return BaseAccounts().getCookie()
     
