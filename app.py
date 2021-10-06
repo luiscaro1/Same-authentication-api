@@ -55,6 +55,7 @@ def getSpecificUser(uaid):
         return jsonify('Method not allowed'), 405
 
 # account login route
+cross_origin()
 @app.route('/Same/login', methods=["POST"])
 def login():
     if request.method=="POST":

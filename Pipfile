@@ -8,6 +8,7 @@ flask = "*"
 flask-cors = "*"
 psycopg2-binary = "*"
 pyjwt = "*"
+colorama = "*"
 
 [dev-packages]
 
