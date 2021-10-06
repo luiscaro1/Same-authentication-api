@@ -24,6 +24,7 @@ class AccountDAO:
         cursor.execute(query,(uaid,))
         result=cursor.fetchone()
         return result
+    
 #Creating a new user
     def addUser(self,uaemail, uausername, uapassword, firstname, lastname, dob, isActive, isCoach,uaplatform):
         cursor=self.conn.cursor()
