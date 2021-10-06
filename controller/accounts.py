@@ -121,32 +121,9 @@ class BaseAccounts:
             return str(user_tuple[0]), user_tuple[1]
         else:
             return False
-    # adds a expired token to the database
-    def add_token(self,json,uaid):
-        dao=AccountDAO()
-        token = json['token']
-        result=dao.blacklist(token,uaid)
-        self.built_attr_dic2(token,uaid)
-        return result
-    # verifies if the token exist in the database so no duplicate of faulty token can be reused
-    def get_token(self,json):
-        dao=AccountDAO()
-        token=json['token']
-        isBlacklisted=dao.check_blacklist(token)
-        if isBlacklisted:
-            return jsonify('The token is blacklisted, and it cannot be used'),405
-        else:
-            return "Token is not Blacklisted"
 
     def getCookie(self):
-        cookie = request.cookies.get('access_token')
+        cookie = request.cookies.get('uaid')
         return cookie
 
 
-
-       
-
-
-
-
-        
