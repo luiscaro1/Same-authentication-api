@@ -56,7 +56,7 @@ class AccountDAO:
  #check that the credential for the username and password belong to a user already in the database
     def validateUser(self, uausername, uapassword):
         cursor=self.conn.cursor()
-        query="""select uaid, uausername
+        query="""select *
         from user_account
         where uausername=%s and uapassword=%s """
         cursor.execute(query,(uausername, uapassword))
