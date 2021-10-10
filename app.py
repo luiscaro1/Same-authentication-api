@@ -50,11 +50,11 @@ def login():
         res = BaseAccounts().Log_in(request.json)
         
         if res:
-            uaid = res[0]
-            username = res[1]
+            uaid = res.get('uaid')
+            username = res.get('uausername')
             expire = datetime.datetime.utcnow() + datetime.timedelta(minutes=30)
             token = jwt.encode({'user': username,'exp': expire}, app.config['SECRET_KEY'])
-            cookie = make_response(uaid)
+            cookie = make_response(res)
             cookie.set_cookie('access_token',token,expires=expire)
             #cookie.set_cookie('uaid',uaid,expires=expire)
 

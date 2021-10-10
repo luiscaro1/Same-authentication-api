@@ -118,9 +118,9 @@ class BaseAccounts:
         uausername = json['uausername']
         uapassword = json['uapassword']
         user_tuple = dao.validateUser(uausername, uapassword)
-
         if user_tuple:
-            return str(user_tuple[0]), user_tuple[1]
+            result = self.builtmapdict(user_tuple)
+            return result
         else:
             return False
             
