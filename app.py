@@ -32,13 +32,13 @@ def users():
         return BaseAccounts().addUser(request.json)
 # need to work on this, for some reasson the put is not working
 @app.route('/Same/accounts/<uaid>',methods=['GET', 'PUT', 'DELETE'])
-def getSpecificUser(uaid):
+def getSpecificUser(uid):
     if request.method == "GET":
-        return BaseAccounts().getUser(uaid)
+        return BaseAccounts().getUser(uid)
     elif request.method == "PUT":
-        return BaseAccounts().UpdateUser(request.json, uaid)
+        return BaseAccounts().UpdateUser(request.json, uid)
     elif request.method == "DELETE":
-        return BaseAccounts().deleteUser(uaid)
+        return BaseAccounts().deleteUser(uid)
     else:
         return jsonify('Method not allowed'), 405
 
@@ -50,13 +50,13 @@ def login():
         res = BaseAccounts().Log_in(request.json)
         
         if res:
-            uaid = res.get('uaid')
-            username = res.get('uausername')
+            uid = res.get('uid')
+            username = res.get('user_name')
             expire = datetime.datetime.utcnow() + datetime.timedelta(minutes=30)
             token = jwt.encode({'user': username,'exp': expire}, app.config['SECRET_KEY'])
             cookie = make_response(res)
             cookie.set_cookie('access_token',token,expires=expire)
-            #cookie.set_cookie('uaid',uaid,expires=expire)
+           
 
             return cookie
 
@@ -65,10 +65,10 @@ def login():
 #will be changed   
 
 @app.route('/Same/accounts/logout/<uaid>',methods=["POST"])
-def logout(uaid):
+def logout(uid):
     token=request.cookies.get('access_token')
     decode_token=jwt.decode(token,app.config['SECRET_KEY'],algorithms=["HS256"])
-    if uaid==BaseAccounts().getCookieOwner(decode_token.get('user')): 
+    if uid==BaseAccounts().getCookieOwner(decode_token.get('user')): 
         actual_time = datetime.datetime.utcnow()
         if  not decode_token.get("exp") == actual_time:
             decode_token.update({"exp":actual_time})

@@ -11,65 +11,65 @@ class AccountDAO:
 #getting all the users from the db
     def getAllUsers(self):
         cursor=self.conn.cursor()
-        query="select * from user_account;"
+        query='select * from "User";'
         cursor.execute(query)
         result=[]
         for row in cursor:
             result.append(row)
         return result
 #get a specific user by id
-    def getUser(self,uaid):
+    def getUser(self,uid):
         cursor=self.conn.cursor()
-        query='select * from user_account where uaid=%s;'
-        cursor.execute(query,(uaid,))
+        query='select * from "User" where uid=%s;'
+        cursor.execute(query,(uid,))
         result=cursor.fetchone()
         return result
     
 #Creating a new user
-    def addUser(self,uaemail, uausername, uapassword, firstname, lastname, dob, isActive, isCoach,uaplatform):
+    def addUser(self,email, user_name, password, first_name, last_name, is_active):
         cursor=self.conn.cursor()
-        query='insert into user_account(uaemail,uausername,uapassword,firstname,lastname,dob,isActive,isCoach,uaplatform) values (%s,%s,%s,%s,%s,%s,%s,%s,%s) returning uaid'
-        cursor.execute(query,(uaemail, uausername, uapassword, firstname, lastname, dob, isActive, isCoach,uaplatform,))
-        uaid=cursor.fetchone()
+        query='insert into "User"(email, user_name, password, first_name, last_name, is_active) values (%s,%s,%s,%s,%s,%s) returning uid'
+        cursor.execute(query,(email, user_name, password, first_name, last_name, is_active,))
+        uid=cursor.fetchone()
         self.conn.commit()
-        return uaid
+        return uid
 
 #updating a user
-    def updateUser(self,uausername,uapassword,uaplatform, uaid):
+    def updateUser(self,user_name,password, uid):
         cursor=self.conn.cursor()
-        query="update user_account set uausername=%s, uapassword=%s,"\
-        "uaplatform=%s where uaid=%s returning *"
-        cursor.execute(query,(uausername,uapassword,uaplatform, uaid))
-        uausername=cursor.fetchone()
+        query='update "User" set user_name=%s, password=%s,'\
+        "where uid=%s returning *"
+        cursor.execute(query,(user_name,password, uid))
+        user_name=cursor.fetchone()
         self.conn.commit()
-        return uausername
+        return user_name
 
 #deleting a user, by deleting a user the isActive will turn to false
-    def deleteUser(self,uaid):
+    def deleteUser(self,uid):
         cursor=self.conn.cursor()
-        query='update user_account set isActive=false where uaid=%s returning *'
-        cursor.execute(query,(uaid,))
+        query='update "User" set is_active=false where uid=%s returning *'
+        cursor.execute(query,(uid,))
         result=cursor.fetchone()
         self.conn.commit()
         return result
 
  #check that the credential for the username and password belong to a user already in the database
-    def validateUser(self, uausername, uapassword):
+    def validateUser(self, user_name, password):
         cursor=self.conn.cursor()
         query="""select *
-        from user_account
-        where uausername=%s and uapassword=%s """
-        cursor.execute(query,(uausername, uapassword))
+        from "User"
+        where user_name=%s and password=%s """
+        cursor.execute(query,(user_name, password))
         result=cursor.fetchone()
         return result
 
     #query to verify if email is already in use
-    def emailExist(self, uaemail):
+    def emailExist(self, email):
         cursor = self.conn.cursor()
-        query = """ select uaemail
-        from user_account
-        where uaemail = %s"""
-        cursor.execute(query,(uaemail,))
+        query = """ select email
+        from "User"
+        where email = %s"""
+        cursor.execute(query,(email,))
         result = cursor.fetchone()
         if result:
             return True
@@ -77,30 +77,30 @@ class AccountDAO:
             return False
     
     #query to verify if username is already taken
-    def usernameExist(self, uausername):
+    def usernameExist(self, user_name):
         cursor = self.conn.cursor()
-        query = """ select uausername
-        from user_account
-        where uausername = %s"""
-        cursor.execute(query,(uausername,))
+        query = """ select user_name
+        from "User"
+        where user_name = %s"""
+        cursor.execute(query,(user_name,))
         result = cursor.fetchone()
         if result:
             return True
         else:
             return False
-    # query to get the uaid from the uausername, used for the token and cookie portion of the authentication portion of the webapp
-    def getUaid(self, uausername):
+    # query to get the uaid from the user_name, used for the token and cookie portion of the authentication portion of the webapp
+    def getUaid(self, user_name):
         cursor = self.conn.cursor()
-        query = """ select uaid
-        from user_account
-        where uausername = %s"""
-        cursor.execute(query,(uausername,))
+        query = """ select uid
+        from "User"
+        where user_name = %s"""
+        cursor.execute(query,(user_name,))
         result = cursor.fetchone()
         return result
 
     #verifies if the password is valid
-    def validPassword(self, uapassword):
-        length = len(uapassword)
+    def validPassword(self, password):
+        length = len(password)
         upper = False
         lower = False
         num = False
@@ -108,7 +108,7 @@ class AccountDAO:
         if length < 8:
             return "Password must have 8 characters or more. password must contain atleast 8 characters, atleast one uppercase letter, atleast one lowercase letter, atleast one number, and atleast one special character"
         else:
-            for i in uapassword:
+            for i in password:
                 if upper == False:
                   if i.isupper():
                       upper = True

@@ -14,43 +14,38 @@ class BaseAccounts:
 
     def builtmapdict(self,row):
         result={}
-        result['uaid']=row[0]
-        result['uaemail']=row[1]
-        result['uausername']=row[2]
-        result['uapassword']=row[3]
-        result['firstname']=row[4]
-        result['lastname']=row[5]
-        result['dob']=row[6]
-        result['isActive']=row[7]
-        result['isCoach']=row[8]
-        result['uaplatform']=row[9]
+        result['uid']=row[0]
+        result['email']=row[1]
+        result['user_name']=row[2]
+        result['password']=row[3]
+        result['first_name']=row[4]
+        result['last_name']=row[5]
+        result['is_active']=row[6]
+
 
         return result
 
-    def built_attr_dic(self,uaid,uaemail,uausername,uapassword,firstname,lastname,dob,isActive,isCoach,uaplatform):
+    def built_attr_dic(self,uid,email,user_name,password,first_name,last_name,is_active):
         result={}
-        result['uaid']=uaid
-        result['uaemail']=uaemail
-        result['uausername']=uausername
-        result['uapassword']=uapassword
-        result['firstname']=firstname
-        result['lastname']=lastname
-        result['dob']=dob
-        result['isActive']=isActive
-        result['isCoach']=isCoach
-        result['uaplatform']=uaplatform
+        result['uid']=uid
+        result['email']=email
+        result['user_name']=user_name
+        result['password']=password
+        result['first_name']=first_name
+        result['last_name']=last_name
+        result['is_active']=is_active
         return result
     
-    def built_attr_dic2(self,token,uaid):
+    def built_attr_dic2(self,token,uid):
         result={}
         result['token']=token
-        result['uaid']=uaid
+        result['uid']=uid
         return result
 
     # return a user from the database that matches the given ID
-    def getUser(self, id):
+    def getUser(self, uid):
         dao = AccountDAO()
-        user_tuple = dao.getUser(id)
+        user_tuple = dao.getUser(uid)
         if not user_tuple:
             return jsonify('Not Found'), 404
         else:
@@ -60,41 +55,37 @@ class BaseAccounts:
 
     # create a new user account and then it is added to the databasae
     def addUser(self, json):
-        uaemail = json['uaemail']
-        uausername = json['uausername']
-        uapassword = json['uapassword']
-        firstname = json['firstname']
-        lastname = json['lastname']
-        dob = json['dob']
-        isActive = True
-        isCoach=False
-        uaplatform=json['uaplatform']
-
+    
+        email = json['email']
+        user_name = json['user_name']
+        password = json['password']
+        first_name = json['first_name']
+        last_name = json['last_name']
+        is_active = True
         dao = AccountDAO()
-        ve = dao.emailExist(uaemail)#verifies if the email is already in use
+        ve = dao.emailExist(email)#verifies if the email is already in use
         if ve:
             return "this email is already taken"
         else:
-            ue = dao.usernameExist(uausername) #verifies if the username is alreadt taken
+            ue = dao.usernameExist(user_name) #verifies if the username is alreadt taken
             if ue:
                 return "username is already taken, please try a different one"
             else:
-                vp = dao.validPassword(uapassword) #verifies if the password is valid
+                vp = dao.validPassword(password) #verifies if the password is valid
                 if vp == False: # this is that the password is valid
-                   id = dao.addUser(uaemail, uausername, uapassword, firstname, lastname, dob, isActive, isCoach,uaplatform)
-                   result = self.built_attr_dic(id,uaemail,uausername, uapassword, firstname, lastname, dob, isActive,isCoach,uaplatform)
+                   uid = dao.addUser(email, user_name, password, first_name, last_name, is_active)
+                   result = self.built_attr_dic(uid,email, user_name, password, first_name, last_name, is_active)
                    return jsonify(result), 201
                 else: # this is when the password does not meet a requirement
                     return vp
                     
 
     # Update the information of an existing user, in this case the user can update the username, password, and the platform
-    def UpdateUser(self, json, id):
+    def UpdateUser(self, json, uid):
         dao = AccountDAO()
-        uausername = json['uausername']
-        uapassword = json['uapassword']
-        uaplatform=json['uaplatform']
-        user_tuple = dao.updateUser(uausername, uapassword, uaplatform, id)
+        user_name = json['user_name']
+        password = json['password']
+        user_tuple = dao.updateUser(user_name, password, uid)
         if not user_tuple:
             return jsonify('No such user'), 404
         else:
@@ -102,9 +93,9 @@ class BaseAccounts:
             return jsonify(result), 200
 
     # delete an account from the database 
-    def deleteUser(self, id):
+    def deleteUser(self, uid):
         dao = AccountDAO()
-        user_tuple = dao.deleteUser(id)
+        user_tuple = dao.deleteUser(uid)
         if not user_tuple:
             return jsonify('No such user'), 404
         else:
@@ -115,9 +106,9 @@ class BaseAccounts:
     # account and be able to utilize the features of the webapplication
     def Log_in(self,json):
         dao = AccountDAO()
-        uausername = json['uausername']
-        uapassword = json['uapassword']
-        user_tuple = dao.validateUser(uausername, uapassword)
+        user_name = json['user_name']
+        password = json['password']
+        user_tuple = dao.validateUser(user_name, password)
         if user_tuple:
             result = self.builtmapdict(user_tuple)
             return result
@@ -125,9 +116,9 @@ class BaseAccounts:
             return False
             
     #process to search to whom the cookie belongs to
-    def getCookieOwner(self, uausername):
+    def getCookieOwner(self, user_name):
         dao = AccountDAO()
-        user_tuple = dao.getUaid(uausername)
+        user_tuple = dao.getUaid(user_name)
         return user_tuple[0]
 
 
