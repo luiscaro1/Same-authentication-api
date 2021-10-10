@@ -17,9 +17,9 @@ app = Flask(__name__)
 
 #an example for basic authentication still needs work
 app.config['SECRET_KEY']="\x05'\xb2W\xc0\xc8\xde\x95\x05\xa0\xc8\x05\x8b\x06\xb6\x8cTF\x02\xf0\x91V\xd96" 
-
 #Routes
-CORS(app)
+CORS(app,supports_credentials=True,origins=['http://localhost:3000'])
+
 @app.route('/')
 def index():
    return "Hello Buddies!!"
@@ -43,7 +43,7 @@ def getSpecificUser(uid):
         return jsonify('Method not allowed'), 405
 
 # account login route
-cross_origin()
+
 @app.route('/Same/login', methods=["POST"])
 def login():
     if request.method=="POST":
@@ -51,9 +51,10 @@ def login():
         
         if res:
             uid = res.get('uid')
-            username = res.get('user_name')
+            user_name = res.get('user_name')
+            print(user_name)
             expire = datetime.datetime.utcnow() + datetime.timedelta(minutes=30)
-            token = jwt.encode({'user': username,'exp': expire}, app.config['SECRET_KEY'])
+            token = jwt.encode({'user': uid,'exp': expire}, app.config['SECRET_KEY'])
             cookie = make_response(res)
             cookie.set_cookie('access_token',token,expires=expire)
            
@@ -79,12 +80,26 @@ def logout(uid):
         
     return " "
 
+
 @app.route('/Same/accounts/getCookieOwner',methods=["GET"])
 def getCookie():
     cookie = request.cookies.get('access_token')
+   
+
+    if(cookie is None):
+        return jsonify("ok"),200
+
+
     decode_token = jwt.decode(cookie,app.config['SECRET_KEY'],algorithms=["HS256"])
     user = decode_token.get('user')
-    return BaseAccounts().getCookieOwner(user)
+
+
+    account= BaseAccounts().getCookieOwner(user)
+
+    if(account):
+        return account
+    else:
+        return jsonify("ok"), 200
     
 
 if __name__=="main":

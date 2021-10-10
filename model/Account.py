@@ -89,12 +89,10 @@ class AccountDAO:
         else:
             return False
     # query to get the uaid from the user_name, used for the token and cookie portion of the authentication portion of the webapp
-    def getUaid(self, user_name):
+    def getUid(self, user):
         cursor = self.conn.cursor()
-        query = """ select uid
-        from "User"
-        where user_name = %s"""
-        cursor.execute(query,(user_name,))
+        query = 'select uid from "User" where uid = %s;'
+        cursor.execute(query,(user,))
         result = cursor.fetchone()
         return result
 

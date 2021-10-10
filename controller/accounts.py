@@ -13,13 +13,14 @@ class BaseAccounts:
         return jsonify(result)
 
     def builtmapdict(self,row):
+
         result={}
         result['uid']=row[0]
-        result['email']=row[1]
-        result['user_name']=row[2]
-        result['password']=row[3]
-        result['first_name']=row[4]
-        result['last_name']=row[5]
+        result['email']=row[3]
+        result['user_name']=row[5]
+        result['password']=row[4]
+        result['first_name']=row[1]
+        result['last_name']=row[2]
         result['is_active']=row[6]
 
 
@@ -116,9 +117,15 @@ class BaseAccounts:
             return False
             
     #process to search to whom the cookie belongs to
-    def getCookieOwner(self, user_name):
+    def getCookieOwner(self, user):
+
         dao = AccountDAO()
-        user_tuple = dao.getUaid(user_name)
-        return user_tuple[0]
+        user_tuple = dao.getUser(user)
+        result =self.builtmapdict(user_tuple)
+      
+        if(user_tuple):
+            return jsonify(result)
+        else:
+            return None
 
 
