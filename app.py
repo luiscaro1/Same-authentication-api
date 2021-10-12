@@ -53,10 +53,11 @@ def login():
             uid = res.get('uid')
             user_name = res.get('user_name')
             print(user_name)
-            expire = datetime.datetime.utcnow() + datetime.timedelta(minutes=30)
-            token = jwt.encode({'user': uid,'exp': expire}, app.config['SECRET_KEY'])
+            expire = 259200 
+            # datetime.datetime.utcnow() + datetime.timedelta(minutes=30)
+            token = jwt.encode({'user': uid}, app.config['SECRET_KEY'])
             cookie = make_response(res)
-            cookie.set_cookie('access_token',token,expires=expire)
+            cookie.set_cookie('access_token',token)
            
 
             return cookie
@@ -87,7 +88,7 @@ def getCookie():
    
 
     if(cookie is None):
-        return jsonify("ok"),200
+        return '',403
 
 
     decode_token = jwt.decode(cookie,app.config['SECRET_KEY'],algorithms=["HS256"])
