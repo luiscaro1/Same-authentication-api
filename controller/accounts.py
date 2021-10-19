@@ -23,6 +23,7 @@ class BaseAccounts:
         result['first_name']=row[1]
         result['last_name']=row[2]
         result['is_active']=row[6]
+        result['avatar_url'] = row[9]
 
 
         return result
@@ -36,6 +37,7 @@ class BaseAccounts:
         result['first_name']=first_name
         result['last_name']=last_name
         result['is_active']=is_active
+        
         return result
     
     def built_attr_dic2(self,token,uid):
