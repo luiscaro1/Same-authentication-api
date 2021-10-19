@@ -66,10 +66,11 @@ def login():
 
 #will be changed   
 
-@app.route('/Same/accounts/logout/<uaid>',methods=["POST"])
+@app.route('/Same/accounts/logout/<uid>',methods=["POST"])
 def logout(uid):
     token=request.cookies.get('access_token')
     decode_token=jwt.decode(token,app.config['SECRET_KEY'],algorithms=["HS256"])
+    print(decode_token)
     if uid==BaseAccounts().getCookieOwner(decode_token.get('user')): 
         actual_time = datetime.datetime.utcnow()
         if  not decode_token.get("exp") == actual_time:
