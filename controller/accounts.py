@@ -1,5 +1,6 @@
 from flask import jsonify, request
 from model.Account import AccountDAO
+from werkzeug.security import generate_password_hash, check_password_hash
 
 class BaseAccounts:
     #getting all the user accounts from the data base
@@ -63,6 +64,7 @@ class BaseAccounts:
         first_name = json['first_name']
         last_name = json['last_name']
         is_active = True
+        password=generate_password_hash(password)
         dao = AccountDAO()
         ve = dao.emailExist(email)#verifies if the email is already in use
         if ve:
@@ -109,10 +111,11 @@ class BaseAccounts:
         dao = AccountDAO()
         user_name = json['user_name']
         password = json['password']
-        user_tuple = dao.validateUser(user_name, password)
+        user_tuple = dao.validateUser(user_name)
         if user_tuple:
             result = self.builtmapdict(user_tuple)
-            return result
+            if check_password_hash(result.get('password'), password):
+                return result
         else:
             return False
             
