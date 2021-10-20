@@ -66,7 +66,7 @@ class BaseAccounts:
         first_name = json['first_name']
         last_name = json['last_name']
         is_active = True
-        password=generate_password_hash(password)
+        
         dao = AccountDAO()
         ve = dao.emailExist(email)#verifies if the email is already in use
         if ve:
@@ -78,6 +78,7 @@ class BaseAccounts:
             else:
                 vp = dao.validPassword(password) #verifies if the password is valid
                 if vp == False: # this is that the password is valid
+                   password=generate_password_hash(password) 
                    uid = dao.addUser(email, user_name, password, first_name, last_name, is_active)
                    result = self.built_attr_dic(uid,email, user_name, password, first_name, last_name, is_active)
                    return jsonify(result), 201
