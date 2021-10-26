@@ -31,7 +31,7 @@ def users():
     else:
         return BaseAccounts().addUser(request.json)
 # need to work on this, for some reasson the put is not working
-@app.route('/Same/accounts/<uaid>',methods=['GET', 'PUT', 'DELETE'])
+@app.route('/Same/accounts/<uid>',methods=['GET', 'PUT', 'DELETE'])
 def getSpecificUser(uid):
     if request.method == "GET":
         return BaseAccounts().getUser(uid)
