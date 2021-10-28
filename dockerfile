@@ -11,6 +11,7 @@ RUN pipenv install --system --deploy
 
 RUN pip install uwsgi
 
+
 CMD ["uwsgi", "wsgi.ini"]
 
 
