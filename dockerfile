@@ -9,4 +9,8 @@ ENV FLASK_APP=app.py
 # install everything outside of the virtual environment
 RUN pipenv install --system --deploy
 
-CMD ["python","app.py"]
+RUN pip install uwsgi
+
+CMD ["uwsgi", "wsgi.ini"]
+
+
