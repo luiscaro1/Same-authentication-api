@@ -105,5 +105,5 @@ def getCookie():
     
 
 if __name__=="main":
-    app.run(debug=1)
+    app.run(debug=1,host='0.0.0.0')
 
