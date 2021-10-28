@@ -6,9 +6,5 @@ services:
       dockerfile: dockerfile
       context: .
     restart: always
-    environment:
-      FLASK_ENV: production
-    volumes:
-      - ".:/app"
     ports:
       - "5000:5000"

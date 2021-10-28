@@ -4,8 +4,9 @@ COPY . /app
 RUN pip install  pipenv
 WORKDIR /app
 
-# install everything outside of the virtual environment
+ENV FLASK_APP=app.py
 
+# install everything outside of the virtual environment
 RUN pipenv install --system --deploy
 
 CMD ["python","app.py"]

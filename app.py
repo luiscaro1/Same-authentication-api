@@ -104,6 +104,6 @@ def getCookie():
         return jsonify("ok"), 200
     
 
-if __name__=="main":
+if __name__=="__main__":
     app.run(debug=1,host='0.0.0.0')
 
