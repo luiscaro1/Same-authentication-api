@@ -10,6 +10,7 @@ import psycopg2
 import hashlib
 import json
 import uuid
+import os
 
 # verify if the example works
 
@@ -105,5 +106,6 @@ def getCookie():
     
 
 if __name__=="__main__":
-    app.run(debug=1,host='0.0.0.0')
+    port=os.environ.get("PORT",5000)
+    app.run(debug=False,host='0.0.0.0', port=port)
 
