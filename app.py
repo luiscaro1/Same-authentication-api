@@ -105,8 +105,6 @@ def getCookie():
         return jsonify("ok"), 200
     
 
-if __name__=="main":
-    app.run(debug=1)
-
-port=os.environ.get("PORT",5000)
-app.run(debug=False,host="0.0.0.0",port=port)
+if __name__=="__main__":
+    port=os.environ.get("PORT",5000)
+    app.run(debug=False,host='0.0.0.0', port=port)
