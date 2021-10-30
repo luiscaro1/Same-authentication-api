@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  auth-api:
+    build:
+      dockerfile: dockerfile
+      context: .
+    restart: always
+    ports:
+      - "5000:5000"

@@ -19,7 +19,7 @@ app = Flask(__name__)
 #an example for basic authentication still needs work
 app.config['SECRET_KEY']="\x05'\xb2W\xc0\xc8\xde\x95\x05\xa0\xc8\x05\x8b\x06\xb6\x8cTF\x02\xf0\x91V\xd96" 
 #Routes
-CORS(app,supports_credentials=True,origins=['http://localhost:3000'])
+CORS(app,supports_credentials=True,origins=['https://same-client-ui.herokuapp.com'])
 
 @app.route('/')
 def index():
@@ -108,3 +108,4 @@ def getCookie():
 if __name__=="__main__":
     port=os.environ.get("PORT",5000)
     app.run(debug=False,host='0.0.0.0', port=port)
+
