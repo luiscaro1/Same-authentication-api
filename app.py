@@ -30,12 +30,13 @@ def error(e):
     app.logger.exception(e)
     return e.to_dict().get('message'),405
 
-#To get users or create them
+#To get users 
 @app.route('/Same/accounts',methods=['GET','POST'])
 def users():
     if request.method=="GET":
         return BaseAccounts().getAllUsers()
-     
+
+#create users
 @app.route('/Same/signup',methods=['POST'])
 def signup():
     if  request.method=='POST':
