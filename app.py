@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, jsonify, make_response
 from flask_cors import CORS,cross_origin
 from controller.accounts import BaseAccounts
 from model.Account import AccountDAO
+from controller.feedback import BaseFeedback
+from model.Feedback import FeedbackDAO
 import jwt
 import datetime
 from functools import wraps
@@ -103,6 +105,21 @@ def getCookie():
         return account
     else:
         return jsonify("ok"), 200
+
+#feedback routes
+@app.route('/Same/feedback', methods=["GET", "POST"])
+def getFeedbacks():
+    if request.method=="GET":
+        return BaseFeedback().getAllFeedback()
+    else:
+        return BaseFeedback().addFeedback(request.json)
+
+#admin only route
+@app.route('/Same/avgfeedback', methods=["GET"])
+def getAvgFeedbacks():
+    return BaseFeedback().avgRatesFeedback()
+
+
     
 
 if __name__=="__main__":
