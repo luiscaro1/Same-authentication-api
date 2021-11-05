@@ -3,6 +3,7 @@ from flask.helpers import flash
 from flask_cors import CORS,cross_origin
 from controller.accounts import BaseAccounts
 from model.Account import AccountDAO
+from error_handling.error import ErrorHandler
 import jwt
 import datetime
 from functools import wraps
@@ -13,10 +14,9 @@ import json
 import uuid
 import os
 
-
 app = Flask(__name__)
 
-#an example for basic authentication still needs work
+#must be change later
 app.config['SECRET_KEY']="\x05'\xb2W\xc0\xc8\xde\x95\x05\xa0\xc8\x05\x8b\x06\xb6\x8cTF\x02\xf0\x91V\xd96" 
 #Routes
 CORS(app,supports_credentials=True,origins=['https://same-client-ui.herokuapp.com','http://localhost:3000'])
@@ -25,40 +25,29 @@ CORS(app,supports_credentials=True,origins=['https://same-client-ui.herokuapp.co
 def index():
    return "Hello Buddies!!"
 
-#Custom error handlers
-@app.errorhandler(405)
-def no_valid_user(err):
-    app.logger.exception(err)
-    return "Username and password not valid, please try again",405
-#need to avoid overriding , some switch case of something
-@app.errorhandler(ValueError)
-def email_already_taken(err):
-    app.logger.exception(err)
-    return "Email is already taken, please try a different one",405
-
-def username_taken(err):
-    app.logger.exception(err)
-    return "Username is already taken, please try a different one",405
-
-def password_error(err):
-    app.logger.exception(err)
-    return "Password must contain atleast 8 characters, one uppercase letter, one lowercase letter, one number, and one special character",405
+@app.errorhandler(ErrorHandler)
+def error(e):
+    app.logger.exception(e)
+    return e.to_dict().get('message'),405
 
 #To get users or create them
 @app.route('/Same/accounts',methods=['GET','POST'])
 def users():
     if request.method=="GET":
         return BaseAccounts().getAllUsers()
-    else:
-        if  request.method=='POST':
-            res=BaseAccounts().addUser(request.json)
-            if res=="this email is already taken":
-                return email_already_taken("error")
-            elif res=="username is already taken, please try a different one":
-                return username_taken("error")
-            elif res=="password must contain atleast 8 characters, atleast one uppercase letter, atleast one lowercase letter, atleast one number, and atleast one special character":
-                return password_error("error")
-            return res
+     
+@app.route('/Same/signup',methods=['POST'])
+def signup():
+    if  request.method=='POST':
+        res=BaseAccounts().addUser(request.json)
+        if res=="this email is already taken":
+            raise ErrorHandler("Email is already taken, please try a different one",status_code=405)
+        elif res=="username is already taken, please try a different one":
+            raise ErrorHandler("Username is already taken, please try a different one",status_code=405)
+        elif res=="password must contain atleast 8 characters, atleast one uppercase letter, atleast one lowercase letter, atleast one number, and atleast one special character":
+            raise ErrorHandler("Password must contain atleast 8 characters, one uppercase letter, one lowercase letter, one number, and one special character", status_code=405)
+        return res
+
 
 #getting a user
 @app.route('/Same/accounts/<uid>',methods=['GET', 'PUT', 'DELETE'])
@@ -90,10 +79,8 @@ def login():
 
             return cookie
 
-    return no_valid_user("error")
+    raise ErrorHandler("Username and password not valid, please try again",status_code=405)
         
-    # return abort(405, description="Username and password not valid, please try again")
-    # return default_error("Username invalid")
  
 #will be changed
 @app.route('/Same/accounts/logout/<uid>',methods=["POST"])
