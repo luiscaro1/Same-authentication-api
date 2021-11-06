@@ -36,10 +36,11 @@ class FeedbackDAO:
                 from feedback        
                 """
         cursor.execute(query)
+        #print(cursor)
+        a = cursor.fetchone()
         result = []
-        for row in cursor:
-            print(row)
-            result.append(row)
+        for row in a:
+            result.append(float(row))
             
         return result
 

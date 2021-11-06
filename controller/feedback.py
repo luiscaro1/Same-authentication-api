@@ -1,7 +1,7 @@
 from flask import jsonify, request
 from model.Feedback import FeedbackDAO
 from model.Account import AccountDAO
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import DEFAULT_PBKDF2_ITERATIONS, generate_password_hash, check_password_hash
 
 class BaseFeedback:
     
@@ -21,14 +21,15 @@ class BaseFeedback:
         result['rateoverall'] = row[9]
 
         return result
-    
-    def builtmapdict2(self,row):
 
+    def build_avg_dic(self, des, func, game, overall):
         result={}
-        result['avg0']=row[0]
-        result['avg1']=row[1]
-        result['avg2']=row[2]
-        result['avg3']=row[3]
+        result['avg_rate_of_design']=des
+        result['avg_rate_of_functionality']=func
+        result['avg_rate_of_games']=game
+        result['avg_rate_of_overall']=overall
+        
+        return result
 
     def built_attr_dic(self,fid,email,websitedesign, ratedesign, websitefunctionality, ratefunctionality, gameavailable, rategames, generalinformation, rateoverall):
         result={}
@@ -84,8 +85,13 @@ class BaseFeedback:
     def avgRatesFeedback(self):
         dao=FeedbackDAO()
         avgfeedbacklist=dao.getAvgRates()
+        des = str(avgfeedbacklist[0]*10)+"%"
+        func = str(avgfeedbacklist[1]*10)+"%"
+        game = str(avgfeedbacklist[2]*10)+"%"
+        overall = str(avgfeedbacklist[3]*10)+"%"
+        result = self.build_avg_dic(des, func, game, overall)
         
-        return str(avgfeedbacklist)
+        return result
 
     
 
