@@ -1,9 +1,8 @@
 from flask import Flask, render_template, request, jsonify, make_response
 from flask_cors import CORS,cross_origin
 from controller.accounts import BaseAccounts
-from model.Account import AccountDAO
 from controller.feedback import BaseFeedback
-from model.Feedback import FeedbackDAO
+from controller.friends import BaseFriend
 import jwt
 import datetime
 from functools import wraps
@@ -119,6 +118,19 @@ def getFeedbacks():
 def getAvgFeedbacks():
     return BaseFeedback().avgRatesFeedback()
 
+#routes de add friend/unfriend
+#might need to change later, just to have it like this for now
+@app.route('/Same/addFriend', methods=["POST"])
+def addFriend():
+    return BaseFriend().addFriend(request.json)
+
+@app.route('/Same/unfriend', methods=["DELETE"])
+def unfriend():
+    return BaseFriend().unfriend(request.json)
+
+@app.route('/Same/getAllFriends', methods=["GET"])
+def getAllFriends():
+    return BaseFriend().getAllfriends(request.json)
 
     
 
