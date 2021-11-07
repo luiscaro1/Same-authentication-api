@@ -4,8 +4,7 @@ import psycopg2
 class AccountDAO:
     def __init__(self):
         connection_url="dbname=%s user=%s password=%s host=%s" %(pg_config['dbname'],
-                                                                   pg_config['username'],
-                                                                   pg_config['password'],
+                                                                   pg_config['username'],                                                             pg_config['password'],
                                                                    pg_config['host'])
         self.conn=psycopg2.connect(connection_url)
 #getting all the users from the db
@@ -125,5 +124,4 @@ class AccountDAO:
                 return False
             else: 
                 return "password must contain atleast 8 characters, atleast one uppercase letter, atleast one lowercase letter, atleast one number, and atleast one special character"
-
 
