@@ -35,9 +35,13 @@ class FriendDAO:
                 """
         cursor.execute(query, (uid, uid2, uid2, uid))
         result = cursor.fetchone()
-        
+        if result is None:
+            return None
+        else:
+            result = result[0]
+            
 
-        return result
+            return result
 
     #be friends again if for some reason the unfriended in the past
     def beFriendsAgain(self, uid, uid2):

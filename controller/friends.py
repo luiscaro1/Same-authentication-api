@@ -1,5 +1,6 @@
 from flask import jsonify
 from model.Friends import FriendDAO
+from model.Block import BlockedDAO
 
 
 class BaseFriend:
@@ -28,17 +29,23 @@ class BaseFriend:
         dao = FriendDAO()
         if uid == uid2:
             return jsonify("Can't add yourself as a friend"), 500
-        #check if previous friendship has been established between users
-        pfe = dao.verifyFriendship(uid, uid2)
-        if pfe == True:
-            return "you are already friends"
-        if pfe == False:
-            dao.beFriendsAgain(uid, uid2)
-            return "friend added successfully"
-        
-        fid = dao.addFriend(uid, uid2, isfriend)
-        result = self.built_attr_dict(fid, uid, uid2, isfriend)
-        return "friend added successfully"  
+        #check if one user blocks the other
+        bd = BlockedDAO().checkIsblocked(uid, uid2)
+        print(bd)
+        if bd == True:
+            return jsonify("you block or are blocked by the user"), 405
+        else:
+            #check if previous friendship has been established between users
+            pfe = dao.verifyFriendship(uid, uid2)
+            if pfe == True:
+                return "you are already friends"
+            if pfe == False:
+                dao.beFriendsAgain(uid, uid2)
+                return "friend added successfully"
+            
+            fid = dao.addFriend(uid, uid2, isfriend)
+            result = self.built_attr_dict(fid, uid, uid2, isfriend)
+            return "friend added successfully"  
 
     def unfriend(self, json):
         uid = json['uid']

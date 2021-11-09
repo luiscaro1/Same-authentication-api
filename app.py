@@ -3,6 +3,7 @@ from flask_cors import CORS,cross_origin
 from controller.accounts import BaseAccounts
 from controller.feedback import BaseFeedback
 from controller.friends import BaseFriend
+from controller.block import BaseBlocked
 import jwt
 import datetime
 from functools import wraps
@@ -132,7 +133,22 @@ def unfriend():
 def getAllFriends():
     return BaseFriend().getAllfriends(request.json)
 
-    
+#route de block/unblock
+@app.route('/Same/blockUser', methods=["POST"])
+def blockUser():
+    return BaseBlocked().blockUser(request.json)
+
+@app.route('/Same/unblockUser', methods=["PUT"])
+def unblockuser():
+    return BaseBlocked().unblockUser(request.json)  
+
+@app.route('/Same/getallblocked', methods=["GET"])
+def getallBlocked():
+    return BaseBlocked().getallBlocked(request.json)  
+
+@app.route('/Same/getallblockedby', methods=["GET"])
+def getallBlockedBy():
+    return BaseBlocked().getallBlockedBy(request.json)   
 
 if __name__=="__main__":
     port=os.environ.get("PORT",5000)
