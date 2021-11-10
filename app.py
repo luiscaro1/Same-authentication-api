@@ -105,10 +105,10 @@ def index():
 #     return {'message': str(error)}, getattr(error, 'code', 405)
 
 #Attempt 8
-# @app.errorhandler(405)
-# def not_allowed(err):
-#     app.logger.error(err)
-#     return jsonify(error="Username and password are not valid, please try again"),405 
+@app.errorhandler(405)
+def not_allowed(err):
+    app.logger.error(err)
+    return jsonify(error="Username and password are not valid, please try again"),405 
 
 # @app.errorhandler(ErrorHandler)
 # def login_error(err):
@@ -159,10 +159,10 @@ def getSpecificUser(uid):
 
 @app.route('/Same/login', methods=["POST"])
 def login():
-    try:
-        if request.method=="POST":
-            res = BaseAccounts().Log_in(request.json)
-            if res:
+    # try:
+    if request.method=="POST":
+        res = BaseAccounts().Log_in(request.json)
+        if res:
                 uid = res.get('uid')
                 user_name = res.get('user_name')
                 print(user_name)
@@ -174,17 +174,18 @@ def login():
            
 
                 return cookie
-    except HTTPException as e:
+    # except HTTPException as e:
     #return ErrorHandler.login_error("Username and password not valid, please try again")
         # abort(405) 
-        abort(Response('Username and password not valid, please try again'),405)
+        # abort(Response('Username and password not valid, please try again'),405)
 
     #raise ErrorTest("Username and password are not valid, please try again")
-    #return not_allowed("Username and password are not valid, please try again")
+    return not_allowed("Username and password are not valid, please try again")
     #return method_not_allowed("Username and password not valid, please try again")
     #raise ErrorHandler("Username and password not valid, please try again",status_code=405)
     #return handle_exception(error="Username and password are not valid, please try again"),405
   #return default_error_handler("Username and password not valid, please try again")
+
     #Attempt 7
     #return MethodNotAllowed(valid_methods=None,description="Method not allowed",response="Username and password not valid, please try again")
     #raise ErrorTest(description="Username and password not valid, please try again")
