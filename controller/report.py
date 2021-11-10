@@ -37,29 +37,6 @@ class BaseReport:
 
 
         return result
-#reporting based on all conditions
-    def reportUser(self, json):
-        uid = json['uid']
-        uid2 = json['uid2']
-        stalking=True
-        spamming=True
-        offensive=True
-        harrasment=True
-        discrimination=True
-        viruses=True
-        violationofIp=True
-        pretending=True
-
-        dao = ReportDAO()
-        #checks if the users were friends, if they were this will unfriend them
-        if uid == uid2:
-            return jsonify("Can't report yourself"), 500
-        #check if users has already blocked the other beforehand
-        
-        rid = dao.reportUser(uid, uid2,stalking,spamming,offensive,harrasment,discrimination,viruses,violationofIp,pretending)
-        result = self.built_attr_dict(rid, uid, uid2,stalking,spamming,offensive,harrasment,discrimination,viruses,violationofIp,pretending)
-        
-        return "user reported successfully" 
 
 #reporting based on specific conditions , temporary
     def reportUserSpecific(self, json):
@@ -75,7 +52,7 @@ class BaseReport:
         pretending=json['pretending']
 
         dao = ReportDAO()
-        #checks if the users were friends, if they were this will unfriend them
+       
         if uid == uid2:
             return jsonify("Can't report yourself"), 500
         #check if users has already blocked the other beforehand
