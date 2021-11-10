@@ -4,8 +4,7 @@ import psycopg2
 class AccountDAO:
     def __init__(self):
         connection_url="dbname=%s user=%s password=%s host=%s" %(pg_config['dbname'],
-                                                                   pg_config['username'],
-                                                                   pg_config['password'],
+                                                                   pg_config['username'],                                                             pg_config['password'],
                                                                    pg_config['host'])
         self.conn=psycopg2.connect(connection_url)
 #getting all the users from the db
@@ -104,32 +103,25 @@ class AccountDAO:
         num = False
         sc = False
         if length < 8:
-            return "Password must have 8 characters or more. password must contain atleast 8 characters, atleast one uppercase letter, atleast one lowercase letter, atleast one number, and atleast one special character"
+            return "password must contain atleast 8 characters, atleast one uppercase letter, atleast one lowercase letter, atleast one number, and atleast one special character"
         else:
             for i in password:
-                if upper == False:
-                  if i.isupper():
-                      upper = True
-                elif lower == False:
+                if lower == False:
                     if i.islower():
                         lower = True
-                elif num == False:
+                if upper == False:
+                    if i.isupper():
+                        upper = True
+                if num == False:
                     if i.isnumeric():
                         num = True
-                else:
+                if sc == False:
                     if not i.isalnum():
                         sc = True
                 if upper == True and lower == True and num == True and sc == True:
                     break
-            if upper == False:
-                return "Password does not contain upper case letter. password must contain atleast 8 characters, atleast one uppercase letter, atleast one lowercase letter, atleast one number, and atleast one special character"
-            elif lower == False:
-                return "Password does not contain lower case letter. password must contain atleast 8 characters, atleast one uppercase letter, atleast one lowercase letter, atleast one number, and atleast one special character"
-            elif num == False:
-                return "Password does not contain a number. password must contain atleast 8 characters, atleast one uppercase letter, atleast one lowercase letter, atleast one number, and atleast one special character"
-            elif sc == False:
-                return "Password does not contain a special character. password must contain atleast 8 characters, atleast one uppercase letter, atleast one lowercase letter, atleast one number, and atleast one special character"
-            else:
+            if upper == True and lower == True and num == True and sc == True:
                 return False
+            else: 
+                return "password must contain atleast 8 characters, atleast one uppercase letter, atleast one lowercase letter, atleast one number, and atleast one special character"
 
-    
