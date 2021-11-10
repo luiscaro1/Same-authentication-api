@@ -28,37 +28,11 @@ CORS(app,supports_credentials=True,origins=['https://same-client-ui.herokuapp.co
 def index():
    return "Hello Buddies!!"
 
-#Attempt 0
-# @app.errorhandler(405)
-# def not_valid_user(err):
-#     app.logger.error(err)
-#     return err,405
 
-#Attempt 0.5
-# @app.errorhandler(405)
-# def not_valid_user(e):
-#     app.logger.error('{}'.format(e))
-#     return e,405
-
-# app.register_error_handler(405,not_valid_user)
-# @app.errorhandler(405)
-# def error(e):
-#     app.logger.exception(e)
-#     return "Username and password not valid, please try again",405
-    # if e=="Username and password not valid, please try again"
-    # return e.to_dict().get('message'),405
-
-#previous  attempt
-# @app.errorhandler(ErrorHandler)
-# def error(e):
-#     app.logger.exception(e)
-#     return e.to_dict().get('message'),405
-
-#Attempt0.8
 @app.errorhandler(ErrorHandler)
 def error(e):
     app.logger.error(e)
-    return jsonify(error=e.to_dict().get('message')),405
+    return jsonify(message=e.to_dict().get('message')),405
 
 
 #To get users 
