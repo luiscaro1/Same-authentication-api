@@ -5,6 +5,7 @@ from controller.accounts import BaseAccounts
 from model.Account import AccountDAO
 from controller.feedback import BaseFeedback
 from controller.friends import BaseFriend
+from error_handling.error import ErrorHandler
 import jwt
 import datetime
 from functools import wraps
@@ -14,7 +15,7 @@ import hashlib
 import json
 import uuid
 import os
-from werkzeug.exceptions import HTTPException
+#from werkzeug.exceptions import HTTPException
 
 app = Flask(__name__)
 
@@ -27,15 +28,17 @@ CORS(app,supports_credentials=True,origins=['https://same-client-ui.herokuapp.co
 def index():
    return "Hello Buddies!!"
 
+#Attempt 0
 # @app.errorhandler(405)
 # def not_valid_user(err):
 #     app.logger.error(err)
 #     return err,405
 
-@app.errorhandler(405)
-def not_valid_user(e):
-    app.logger.error('{}'.format(e))
-    return e,405
+#Attempt 0.5
+# @app.errorhandler(405)
+# def not_valid_user(e):
+#     app.logger.error('{}'.format(e))
+#     return e,405
 
 # app.register_error_handler(405,not_valid_user)
 # @app.errorhandler(405)
@@ -45,8 +48,21 @@ def not_valid_user(e):
     # if e=="Username and password not valid, please try again"
     # return e.to_dict().get('message'),405
 
+#previous  attempt
+# @app.errorhandler(ErrorHandler)
+# def error(e):
+#     app.logger.exception(e)
+#     return e.to_dict().get('message'),405
+
+#Attempt0.8
+@app.errorhandler(ErrorHandler)
+def error(e):
+    app.logger.error(e)
+    return jsonify(error=e.to_dict().get('message')),405
+
+
 #To get users 
-@app.route('/Same/accounts',methods=['GET','POST'])
+@app.route('/Same/accounts',methods=['GET'])
 def users():
     if request.method=="GET":
         return BaseAccounts().getAllUsers()
@@ -57,14 +73,14 @@ def signup():
     if  request.method=='POST':
         res=BaseAccounts().addUser(request.json)
         if res=="this email is already taken":
-            return ""
-            # raise ErrorHandler("Email is already taken, please try a different one",status_code=405)
+            # return ""
+            raise ErrorHandler("Email is already taken, please try a different one",status_code=405)
         elif res=="username is already taken, please try a different one":
-            return ""
-            # raise ErrorHandler("Username is already taken, please try a different one",status_code=405)
+            # return ""
+            raise ErrorHandler("Username is already taken, please try a different one",status_code=405)
         elif res=="password must contain atleast 8 characters, atleast one uppercase letter, atleast one lowercase letter, atleast one number, and atleast one special character":
-            return ""
-            # raise ErrorHandler("Password must contain atleast 8 characters, one uppercase letter, one lowercase letter, one number, and one special character", status_code=405)
+            # return ""
+            raise ErrorHandler("Password must contain atleast 8 characters, one uppercase letter, one lowercase letter, one number, and one special character", status_code=405)
         return res
 
 
@@ -98,8 +114,8 @@ def login():
 
             return cookie
 
-    # raise ErrorHandler("Username and password not valid, please try again",status_code=405)
-    return not_valid_user('Username and password not valid, please try again')
+    raise ErrorHandler("Username and password not valid, please try again",status_code=405)
+    #return not_valid_user('Username and password not valid, please try again')
         
  
 #will be changed
