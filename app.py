@@ -1,7 +1,10 @@
 from flask import Flask, render_template, request, jsonify, make_response
 from flask_cors import CORS,cross_origin
 from controller.accounts import BaseAccounts
-from model.Account import AccountDAO
+from controller.feedback import BaseFeedback
+from controller.friends import BaseFriend
+from controller.block import BaseBlocked
+from controller.report import BaseReport
 import jwt
 import datetime
 from functools import wraps
@@ -103,7 +106,58 @@ def getCookie():
         return account
     else:
         return jsonify("ok"), 200
-    
+
+#feedback routes
+@app.route('/Same/feedback', methods=["GET", "POST"])
+def getFeedbacks():
+    if request.method=="GET":
+        return BaseFeedback().getAllFeedback()
+    else:
+        return BaseFeedback().addFeedback(request.json)
+
+#admin only route
+@app.route('/Same/avgfeedback', methods=["GET"])
+def getAvgFeedbacks():
+    return BaseFeedback().avgRatesFeedback()
+
+#routes de add friend/unfriend
+#might need to change later, just to have it like this for now
+@app.route('/Same/addFriend', methods=["POST"])
+def addFriend():
+    return BaseFriend().addFriend(request.json)
+
+@app.route('/Same/unfriend', methods=["DELETE"])
+def unfriend():
+    return BaseFriend().unfriend(request.json)
+
+@app.route('/Same/getAllFriends', methods=["GET"])
+def getAllFriends():
+    return BaseFriend().getAllfriends(request.json)
+
+#route de block/unblock
+@app.route('/Same/blockUser', methods=["POST"])
+def blockUser():
+    return BaseBlocked().blockUser(request.json)
+
+@app.route('/Same/unblockUser', methods=["PUT"])
+def unblockuser():
+    return BaseBlocked().unblockUser(request.json)  
+
+@app.route('/Same/getallblocked', methods=["GET"])
+def getallBlocked():
+    return BaseBlocked().getallBlocked(request.json)  
+
+@app.route('/Same/getallblockedby', methods=["GET"])
+def getallBlockedBy():
+    return BaseBlocked().getallBlockedBy(request.json)
+
+@app.route('/Same/report',methods=["POST"]) 
+def report():
+    return BaseReport().reportUserSpecific(request.json)
+
+@app.route('/Same/report/getallreports',methods=["GET"])
+def getallReports():
+    return BaseReport().getallReported()
 
 if __name__=="__main__":
     port=os.environ.get("PORT",5000)

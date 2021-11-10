@@ -8,7 +8,7 @@ WORKDIR /app
 
 RUN pipenv install --system --deploy
 
-ENV PYTHON_ENV development
+# ENV PYTHON_ENV development
 
 CMD ["flask", "run", "-h", "0.0.0.0"]
 
