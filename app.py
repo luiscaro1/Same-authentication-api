@@ -22,7 +22,7 @@ app = Flask(__name__)
 #must be change later
 app.config['SECRET_KEY']="\x05'\xb2W\xc0\xc8\xde\x95\x05\xa0\xc8\x05\x8b\x06\xb6\x8cTF\x02\xf0\x91V\xd96" 
 #Routes
-CORS(app,supports_credentials=True,origins=['https://same-client-ui.herokuapp.com','http://localhost:3000'])
+CORS(app,supports_credentials=True,origins=['https://www.samelfg.com','http://localhost:3000'])
 
 @app.route('/')
 def index():
@@ -79,7 +79,6 @@ def login():
         if res:
             uid = res.get('uid')
             user_name = res.get('user_name')
-            print(user_name)
             expire = 259200 
             # datetime.datetime.utcnow() + datetime.timedelta(minutes=30)
             token = jwt.encode({'user': uid}, app.config['SECRET_KEY'])
