@@ -81,7 +81,7 @@ class BaseAccounts:
                    password=generate_password_hash(password) 
                    uid = dao.addUser(email, user_name, password, first_name, last_name, is_active)
                    result = self.built_attr_dic(uid,email, user_name, password, first_name, last_name, is_active)
-                   return jsonify(result), 201
+                   return result
                 else: # this is when the password does not meet a requirement
                     return vp
                     
